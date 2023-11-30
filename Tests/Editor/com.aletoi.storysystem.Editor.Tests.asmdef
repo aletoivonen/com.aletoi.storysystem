@@ -1,0 +1,14 @@
+{
+	"name": "com.aletoi.storysystem.Editor.Tests",
+  "references": [
+    "com.aletoi.storysystem.Editor",
+    "com.aletoi.storysystem"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}

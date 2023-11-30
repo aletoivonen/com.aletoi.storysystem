@@ -1,0 +1,10 @@
+{
+  "name": "com.aletoi.storysystem",
+  "version": "0.0.1",
+  "displayName": "StorySystem",
+  "description": "This is a simple expandable story system for singleplayer games",
+  "unity": "2020.3",
+  "author": {
+    "name": "Aleksi Toivonen"
+  }
+}
