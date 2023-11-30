@@ -1,3 +1,16 @@
 {
-	"name": "com.aletoi.storysystem.editor"
+    "name": "com.aletoi.storysystem.editor",
+    "rootNamespace": "",
+    "references": [
+        "com.aletoi.storysystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
