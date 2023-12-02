@@ -4,7 +4,7 @@
     {
         Locked = 0,
         Possible,
-        Completed,
-        Passed
+        Complete,
+        Skipped
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace StorySystem
 {
-    public enum ConditionStatus
+    public enum GoalStatus
     {
         Locked = 0,
         Open,
-        Completed,
+        Complete,
         Failed
     }
 }

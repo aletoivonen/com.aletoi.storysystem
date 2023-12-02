@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace StorySystem
 {
-    public class StorySystem : MonoBehaviour
+    public class StorySingleton : MonoBehaviour
     {
-        public static StorySystem Instance { get { return _instance; } }
+        public static StorySingleton Instance { get { return _instance; } }
 
-        private static StorySystem _instance;
+        private static StorySingleton _instance;
 
         [SerializeField] private StoryConfiguration _configuration;
 
@@ -37,6 +37,11 @@ namespace StorySystem
                 _saveGameContainer = (ISaveGameContainer)ScriptableObject.CreateInstance(containerType.Name);
                 _saveGameContainer.LoadGame(0);
             }
+        }
+
+        public bool GetFlag(string flag)
+        {
+            return _saveGameContainer.GetFlag(flag);
         }
     }
 }
