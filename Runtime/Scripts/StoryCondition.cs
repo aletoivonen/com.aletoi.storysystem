@@ -1,19 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StorySystem
 {
-    public abstract class StoryCondition : ScriptableObject, IStoryCondition
+    [CreateAssetMenu(fileName = "StoryCondition", menuName = "StorySystem/StoryCondition", order = 5)]
+    public class StoryCondition : ScriptableObject, IStoryCondition
     {
-        private List<string> _requiredFlags = new List<string>();
-        private List<string> _blockingFlags = new List<string>();
+        public List<StoryFlagItem> RequiredFlags = new List<StoryFlagItem>();
+        public List<StoryFlagItem> BlockingFlags = new List<StoryFlagItem>();
 
         public bool GetStatus()
         {
-            return _requiredFlags.All(flag => StorySingleton.Instance.GetFlag(flag)) &&
-                   _blockingFlags.All(flag => !StorySingleton.Instance.GetFlag(flag));
+            return RequiredFlags.All(flag => StorySingleton.Instance.GetFlag(flag.Flag)) &&
+                   BlockingFlags.All(flag => !StorySingleton.Instance.GetFlag(flag.Flag));
         }
+    }
+
+    [System.Serializable]
+    public class StoryFlagItem
+    {
+        [StoryFlag]
+        public string Flag;
     }
 
     public interface IStoryCondition

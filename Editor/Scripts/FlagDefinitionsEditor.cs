@@ -18,7 +18,11 @@ public class FlagDefinitionsEditor : Editor
 
         DrawDefaultInspector();
 
-        string path = GUILayout.TextField(string.IsNullOrEmpty(_defs.EnumPath) ? _defaultPath : _defs.EnumPath);
+        /*
+         This is obsolete atm because the enum generated in the project isn't visible to package code.
+         This could be used if the package was extracted in the project and could see the enum.
+
+         string path = GUILayout.TextField(string.IsNullOrEmpty(_defs.EnumPath) ? _defaultPath : _defs.EnumPath);
         if (path != _defaultPath)
         {
             _defs.EnumPath = path;
@@ -27,7 +31,7 @@ public class FlagDefinitionsEditor : Editor
         if (GUILayout.Button("Generate enum"))
         {
             Generate(path);
-        }
+        }*/
     }
 
     private void Generate(string path)
