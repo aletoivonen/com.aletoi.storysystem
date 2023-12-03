@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using StorySystem;
 using UnityEngine;
 using UnityEditor;
@@ -14,12 +15,38 @@ namespace StorySystem
 
         public override void OnInspectorGUI()
         {
-           // StoryCondition condition = (StoryCondition)target;
+            StoryCondition condition = (StoryCondition)target;
 
             DrawDefaultInspector();
 
-           // serializedObject.Update();
-            
+            foreach (StoryFlagItem flag in condition.RequiredFlags)
+            {
+                if (string.IsNullOrEmpty(flag.Flag))
+                {
+                    EditorGUILayout.HelpBox("Empty flag in required flags!", MessageType.Warning);
+                }
+                else if (!choices.Contains(flag.Flag))
+                {
+                    EditorGUILayout.HelpBox("Unknown flag in required flags, maybe missing from config: " + flag.Flag,
+                        MessageType.Error);
+                }
+            }
+
+            foreach (StoryFlagItem flag in condition.BlockingFlags)
+            {
+                if (string.IsNullOrEmpty(flag.Flag))
+                {
+                    EditorGUILayout.HelpBox("Empty flag in blocking flags!", MessageType.Warning);
+                }
+                else if (!choices.Contains(flag.Flag))
+                {
+                    EditorGUILayout.HelpBox("Unknown flag in blocking flags, maybe missing from config: " + flag.Flag,
+                        MessageType.Error);
+                }
+            }
+
+            // serializedObject.Update();
+
             /*int newMask = EditorGUILayout.MaskField(
                 "Story Flags", condition.RequiredMask,
                 choices.ToArray());*/
@@ -27,7 +54,7 @@ namespace StorySystem
             /*if (newMask != condition.RequiredMask)
             {
                 condition.RequiredFlags.Clear();
-            
+
                 for (int i = 0; i < sizeof(int) * 8; i++)
                 {
                     int bitValue = (newMask >> i) & 1;

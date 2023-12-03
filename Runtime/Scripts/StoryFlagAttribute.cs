@@ -16,7 +16,14 @@ namespace StorySystem
             EditorGUI.BeginChangeCheck();
             var flags = StoryFlagUtil.Flags;
             var oldIndex = flags.IndexOf(property.stringValue);
-            int index = EditorGUI.Popup(position, oldIndex >= 0 ? oldIndex : 0,
+
+            if (oldIndex < 0 && property.stringValue != "")
+            {
+                EditorGUI.HelpBox(position, "Invalid flag: " + property.stringValue, MessageType.Error);
+                return;
+            }
+            
+            int index = EditorGUI.Popup(position, oldIndex >= 0 ? oldIndex : -1,
                 StoryFlagUtil.Flags.ToArray());
             if (EditorGUI.EndChangeCheck())
             {

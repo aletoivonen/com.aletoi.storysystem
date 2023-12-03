@@ -13,7 +13,14 @@ namespace StorySystem
         
         [SerializeField] private ScriptableObject SaveGameContainer;
 
+        [SerializeField] private List<StoryPhase> _phases;
+        
         public System.Type SaveGameType => SaveGameContainer.GetType();
+
+        public StoryPhase GetPhase(string id)
+        {
+            return _phases.Find(phase => phase.PhaseId == id);
+        }
     }
 
 }

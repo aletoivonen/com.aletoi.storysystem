@@ -4,9 +4,9 @@ namespace StorySystem
     {
         public void LoadGame(int saveIndex);
         public void SaveGame(int saveIndex);
-        public string GetCurrentPhase();
+        public string GetCurrentPhaseId();
 
-        public void SetPhase(string id);
+        public void SetCurrentPhaseId(string id);
 
         public bool GetFlag(string id);
 

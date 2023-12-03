@@ -3,7 +3,7 @@
     public enum GoalStatus
     {
         Locked = 0,
-        Open,
+        InProgress,
         Complete,
         Failed
     }

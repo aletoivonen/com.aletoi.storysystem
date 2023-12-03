@@ -3,8 +3,8 @@
     public enum ExitStatus
     {
         Locked = 0,
-        Possible,
+        InProgress,
         Complete,
-        Skipped
+        Failed
     }
 }

@@ -7,13 +7,18 @@ namespace StorySystem
 {
     public class StorySingleton : MonoBehaviour
     {
-        public static StorySingleton Instance { get { return _instance; } }
+        public static StorySingleton Instance => _instance;
 
         private static StorySingleton _instance;
+
+        public static event Action<string, bool> OnFlagChanged;
+        public static event Action<StoryPhase> OnPhaseChanged;
 
         [SerializeField] private StoryConfiguration _configuration;
 
         private ISaveGameContainer _saveGameContainer;
+
+        private StoryPhase _currentPhase;
 
         private void Awake()
         {
@@ -31,17 +36,45 @@ namespace StorySystem
 
         private void Initialize()
         {
+            Type containerType = _configuration.SaveGameType;
+            _saveGameContainer = (ISaveGameContainer)ScriptableObject.CreateInstance(containerType.Name);
+
             if (_configuration.SlotCount == 1)
             {
-                Type containerType = _configuration.SaveGameType;
-                _saveGameContainer = (ISaveGameContainer)ScriptableObject.CreateInstance(containerType.Name);
-                _saveGameContainer.LoadGame(0);
+                LoadSlot(0);
             }
         }
 
-        public bool GetFlag(string flag)
+        public void ActivateExit(string id)
         {
-            return _saveGameContainer.GetFlag(flag);
+            StoryExit exit = _currentPhase.GetExit(id);
+
+            if (exit != null && exit.GetStatus() == ExitStatus.Complete)
+            {
+                ChangePhase(exit.NextPhase.PhaseId);
+            }
+        }
+
+        private void ChangePhase(string id)
+        {
+            StoryPhase phase = _configuration.GetPhase(_saveGameContainer.GetCurrentPhaseId());
+            _currentPhase = phase;
+            OnPhaseChanged?.Invoke(phase);
+        }
+
+        private void LoadSlot(int slot)
+        {
+            _saveGameContainer.LoadGame(0);
+            _currentPhase = _configuration.GetPhase(_saveGameContainer.GetCurrentPhaseId());
+        }
+
+        public bool GetFlag(string flag) { return _saveGameContainer.GetFlag(flag); }
+
+        public void SetFlag(string flag, bool value)
+        {
+            _saveGameContainer.SetFlag(flag, value);
+
+            OnFlagChanged?.Invoke(flag, value);
         }
     }
 }
