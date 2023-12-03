@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StorySystem
 {
@@ -19,6 +20,8 @@ namespace StorySystem
         private ISaveGameContainer _saveGameContainer;
 
         private StoryPhase _currentPhase;
+        
+        [SerializeField] private StoryFlagItem _debugFlagToToggle;
 
         private void Awake()
         {
@@ -43,6 +46,13 @@ namespace StorySystem
             {
                 LoadSlot(0);
             }
+        }
+
+        [ContextMenu("Debug Complete Flag")]
+        private void DebugToggleFlag()
+        {
+            bool flag = GetFlag(_debugFlagToToggle.Flag);
+            SetFlag(_debugFlagToToggle.Flag, !flag);
         }
 
         public void ActivateExit(string id)
@@ -75,6 +85,11 @@ namespace StorySystem
             _saveGameContainer.SetFlag(flag, value);
 
             OnFlagChanged?.Invoke(flag, value);
+        }
+
+        public void GoalCompleted(StoryGoal goal)
+        {
+            
         }
     }
 }
