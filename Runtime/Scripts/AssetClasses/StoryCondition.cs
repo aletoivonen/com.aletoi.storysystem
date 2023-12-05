@@ -11,7 +11,7 @@ namespace StorySystem
         public List<StoryFlagItem> RequiredFlags = new List<StoryFlagItem>();
         public List<StoryFlagItem> BlockingFlags = new List<StoryFlagItem>();
 
-        public bool GetStatus()
+        public bool IsFulfilled()
         {
             return RequiredFlags.All(flag => StorySingleton.Instance.GetFlag(flag.Flag)) &&
                    BlockingFlags.All(flag => !StorySingleton.Instance.GetFlag(flag.Flag));
@@ -27,6 +27,6 @@ namespace StorySystem
 
     public interface IStoryCondition
     {
-        public bool GetStatus();
+        public bool IsFulfilled();
     }
 }

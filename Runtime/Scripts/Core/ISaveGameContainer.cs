@@ -3,7 +3,7 @@ namespace StorySystem
     public interface ISaveGameContainer
     {
         public void LoadGame(int saveIndex);
-        public void SaveGame(int saveIndex);
+        public void SaveGame(int saveIndex = -1);
         public string GetCurrentPhaseId();
 
         public void SetCurrentPhaseId(string id);
@@ -11,5 +11,9 @@ namespace StorySystem
         public bool GetFlag(string id);
 
         public void SetFlag(string id, bool value);
+
+        public void SetGoalFinishStatus(string id, GoalStatus status);
+
+        public GoalStatus GetGoalFinishStatus(string id);
     }
 }

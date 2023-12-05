@@ -11,12 +11,15 @@ namespace StorySystem
         [SerializeField] private List<StoryExit> _exits;
         [SerializeField] private string _phaseId;
 
+        public List<StoryExit> Exits => _exits;
+        
         public string PhaseId => _phaseId;
 
         public StoryExit GetExit(string id)
         {
             return _exits.Find(exit => exit.ExitId == id);
         }
+
     }
     
 }

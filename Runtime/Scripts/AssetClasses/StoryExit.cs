@@ -15,29 +15,41 @@ namespace StorySystem
         public string ExitId => _exitId;
         public StoryPhase NextPhase => _nextPhase;
 
-        [SerializeField] private bool _autoActivate;
+        public bool AutoActivate;
         
         public ExitStatus GetStatus()
         {
+            // TODO dont have default return as complete
+            
             ExitStatus status = ExitStatus.Complete;
             
             foreach (StoryGoal goal in _requiredGoals)
             {
-                if (goal.GetStatus() == GoalStatus.Failed)
+                GoalStatus goalStatus = goal.GetStatus();
+                
+                if (goalStatus == GoalStatus.Failed)
                 {
+                    Debug.Log("exit failed: " + _exitId);
                     return ExitStatus.Failed;
                 }
-                if (goal.GetStatus() == GoalStatus.Locked)
+                if (goalStatus == GoalStatus.Locked)
                 {
+                    Debug.Log("exit locked: " + _exitId);
                     return ExitStatus.Locked;
                 }
-                if (goal.GetStatus() == GoalStatus.InProgress)
+                if (goalStatus == GoalStatus.InProgress)
                 {
                     status = ExitStatus.InProgress;
                 }
             }
 
+            Debug.Log("exit " + _exitId + " " + status.ToString());
             return status;
+        }
+
+        public List<StoryGoal> GetOpenGoals()
+        {
+            return _requiredGoals.Where(goal => goal.GetStatus() == GoalStatus.InProgress).ToList();
         }
     }
 

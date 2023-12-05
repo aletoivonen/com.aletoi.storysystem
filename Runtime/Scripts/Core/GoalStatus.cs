@@ -2,8 +2,8 @@
 {
     public enum GoalStatus
     {
-        Locked = 0,
-        InProgress,
+        InProgress = 0,
+        Locked,
         Complete,
         Failed
     }

@@ -21,6 +21,11 @@ namespace StorySystem
         {
             return _phases.Find(phase => phase.PhaseId == id);
         }
+
+        public StoryPhase DefaultPhase()
+        {
+            return _phases[0];
+        }
     }
 
 }
