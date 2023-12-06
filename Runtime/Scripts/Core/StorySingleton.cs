@@ -133,6 +133,16 @@ namespace StorySystem
             _checkingProgression = false;
         }
 
+        public Dictionary<string, bool> GetAllFlags()
+        {
+            return _storyState.Flags;
+        }
+
+        public StoryPhase GetCurrentPhase()
+        {
+            return _storyState.CurrentPhase;
+        }
+
         public bool GetFlag(string flag)
         {
             return _storyState.GetFlag(flag);

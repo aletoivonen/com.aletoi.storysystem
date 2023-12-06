@@ -2,6 +2,6 @@
 {
     public interface IStoryGoal
     {
-        public GoalStatus GetStatus();
+        public GoalStatus GetStatus(bool skipInvoke = false);
     }
 }

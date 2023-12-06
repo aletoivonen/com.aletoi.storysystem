@@ -33,7 +33,7 @@ namespace StorySystem
             }
             else
             {
-                _configuration.GetPhase(currentPhaseId);
+                CurrentPhase = _configuration.GetPhase(currentPhaseId);
             }
 
             List<string> flags = _configuration.FlagDefinitions.Flags;

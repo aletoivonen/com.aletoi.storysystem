@@ -14,6 +14,8 @@ namespace StorySystem
         [SerializeField] private ScriptableObject SaveGameContainer;
 
         [SerializeField] private List<StoryPhase> _phases;
+
+        public List<StoryPhase> Phases => _phases;
         
         public System.Type SaveGameType => SaveGameContainer.GetType();
 

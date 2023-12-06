@@ -19,7 +19,7 @@ namespace StorySystem
 
         public bool AutoActivate;
         
-        public ExitStatus GetStatus()
+        public ExitStatus GetStatus(bool skipInvoke = false)
         {
             // TODO dont have default return as complete
             
@@ -27,7 +27,7 @@ namespace StorySystem
             
             foreach (StoryGoal goal in _goals)
             {
-                GoalStatus goalStatus = goal.GetStatus();
+                GoalStatus goalStatus = goal.GetStatus(skipInvoke);
                 
                 if (goalStatus == GoalStatus.Failed)
                 {
@@ -51,12 +51,12 @@ namespace StorySystem
 
         public List<StoryGoal> GetOpenGoals()
         {
-            return _goals.Where(goal => goal.GetStatus() == GoalStatus.InProgress).ToList();
+            return _goals.Where(goal => goal.GetStatus(true) == GoalStatus.InProgress).ToList();
         }
     }
 
     public interface IStoryExit
     {
-        public ExitStatus GetStatus();
+        public ExitStatus GetStatus(bool skipInvoke = false);
     }
 }

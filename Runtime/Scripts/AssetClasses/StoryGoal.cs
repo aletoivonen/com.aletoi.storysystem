@@ -17,15 +17,19 @@ namespace StorySystem
         [SerializeField] private List<StoryCondition> _completeConditions;
         [SerializeField] private List<StoryCondition> _failConditions;
 
+        public List<StoryCondition> Prerequisites => _prerequisites;
+        public List<StoryCondition> CompleteConditions => _completeConditions;
+        public List<StoryCondition> FailConditions => _failConditions;
+
         [SerializeField] private List<StoryFlagItem> _rewardFlags;
         public string GoalId => _goalId;
 
         public List<StoryFlagItem> RewardFlags => _rewardFlags;
 
-        public virtual GoalStatus GetStatus()
+        public GoalStatus GetStatus(bool skipInvoke = false)
         {
             GoalStatus finishStatus = StorySingleton.Instance.GetGoalFinishStatus(_goalId);
-            
+
             if (finishStatus != GoalStatus.InProgress && finishStatus != GoalStatus.Locked)
             {
                 Debug.Log("goal cached: " + _goalId + " " + finishStatus);
@@ -41,7 +45,11 @@ namespace StorySystem
             if (_failConditions.Any(condition => condition.IsFulfilled()))
             {
                 Debug.Log("goal failed: " + _goalId);
-                OnGoalFailed?.Invoke(this);
+
+                if (!skipInvoke)
+                {
+                    OnGoalFailed?.Invoke(this);
+                }
 
                 return GoalStatus.Failed;
             }
@@ -49,7 +57,10 @@ namespace StorySystem
             if (_completeConditions.All(condition => condition.IsFulfilled()))
             {
                 Debug.Log("goal completed: " + _goalId);
-                OnGoalCompleted?.Invoke(this);
+                if (!skipInvoke)
+                {
+                    OnGoalCompleted?.Invoke(this);
+                }
 
                 return GoalStatus.Complete;
             }

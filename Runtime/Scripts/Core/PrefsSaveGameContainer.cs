@@ -34,7 +34,7 @@ namespace StorySystem
             PlayerPrefs.Save();
         }
 
-        public string GetCurrentPhaseId() { return PlayerPrefs.GetString(KeyPhase); }
+        public string GetCurrentPhaseId() { return PlayerPrefs.GetString(GetPhaseKey); }
 
         public void SetCurrentPhaseId(string id)
         {
