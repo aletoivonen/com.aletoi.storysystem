@@ -10,10 +10,12 @@ namespace StorySystem
     public class StoryExit : ScriptableObject, IStoryExit
     {
         [SerializeField] private StoryPhase _nextPhase;
-        [SerializeField] private List<StoryGoal> _requiredGoals;
+        [SerializeField] private List<StoryGoal> _goals;
         [SerializeField] private string _exitId;
         public string ExitId => _exitId;
         public StoryPhase NextPhase => _nextPhase;
+
+        public List<StoryGoal> Goals => _goals;
 
         public bool AutoActivate;
         
@@ -23,7 +25,7 @@ namespace StorySystem
             
             ExitStatus status = ExitStatus.Complete;
             
-            foreach (StoryGoal goal in _requiredGoals)
+            foreach (StoryGoal goal in _goals)
             {
                 GoalStatus goalStatus = goal.GetStatus();
                 
@@ -49,7 +51,7 @@ namespace StorySystem
 
         public List<StoryGoal> GetOpenGoals()
         {
-            return _requiredGoals.Where(goal => goal.GetStatus() == GoalStatus.InProgress).ToList();
+            return _goals.Where(goal => goal.GetStatus() == GoalStatus.InProgress).ToList();
         }
     }
 

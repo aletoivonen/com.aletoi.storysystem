@@ -26,6 +26,24 @@ namespace StorySystem
         {
             return _phases[0];
         }
+
+        public List<StoryGoal> GetAllGoals()
+        {
+            List<StoryGoal> allGoals = new List<StoryGoal>();
+            
+            foreach (StoryPhase phase in _phases)
+            {
+                foreach (StoryExit exit in phase.Exits)
+                {
+                    foreach (StoryGoal goal in exit.Goals)
+                    {
+                        allGoals.Add(goal);
+                    }
+                }
+            }
+
+            return allGoals;
+        } 
     }
 
 }

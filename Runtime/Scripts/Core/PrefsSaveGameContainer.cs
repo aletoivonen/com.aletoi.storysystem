@@ -25,7 +25,7 @@ namespace StorySystem
         public void SaveGame(int saveIndex = -1)
         {
             Debug.Log("save game");
-            //TODO overwrite another index, need to read all flags
+            
             if (saveIndex >= 0)
             {
                 _saveIndex = saveIndex;

@@ -20,36 +20,28 @@ namespace StorySystem
         [SerializeField] private List<StoryFlagItem> _rewardFlags;
         public string GoalId => _goalId;
 
-        private bool _unlocked;
-        private bool _init;
-
         public List<StoryFlagItem> RewardFlags => _rewardFlags;
-
-        private GoalStatus _finishStatus = GoalStatus.InProgress;
 
         public virtual GoalStatus GetStatus()
         {
-            if (!_init) { Initialize(); }
-
-            if (_finishStatus != GoalStatus.InProgress)
+            GoalStatus finishStatus = StorySingleton.Instance.GetGoalFinishStatus(_goalId);
+            
+            if (finishStatus != GoalStatus.InProgress && finishStatus != GoalStatus.Locked)
             {
-                Debug.Log("goal cached: " + _goalId + " " + _finishStatus);
-                return _finishStatus;
+                Debug.Log("goal cached: " + _goalId + " " + finishStatus);
+                return finishStatus;
             }
 
-            if (!_unlocked && !_prerequisites.All(condition => condition.IsFulfilled()))
+            if (!_prerequisites.All(condition => condition.IsFulfilled()))
             {
                 Debug.Log("goal locked: " + _goalId);
                 return GoalStatus.Locked;
             }
 
-            _unlocked = true;
-
             if (_failConditions.Any(condition => condition.IsFulfilled()))
             {
                 Debug.Log("goal failed: " + _goalId);
                 OnGoalFailed?.Invoke(this);
-                _finishStatus = GoalStatus.Failed;
 
                 return GoalStatus.Failed;
             }
@@ -58,7 +50,6 @@ namespace StorySystem
             {
                 Debug.Log("goal completed: " + _goalId);
                 OnGoalCompleted?.Invoke(this);
-                _finishStatus = GoalStatus.Complete;
 
                 return GoalStatus.Complete;
             }
@@ -66,17 +57,5 @@ namespace StorySystem
             Debug.Log("goal in progress: " + _goalId);
             return GoalStatus.InProgress;
         }
-
-        private void Initialize()
-        {
-            _finishStatus = StorySingleton.Instance.GetGoalFinished(_goalId);
-            Debug.Log("init goal " + _goalId + " to status " + _finishStatus);
-            _init = true;
-        }
-    }
-
-    public interface IStoryGoal
-    {
-        public GoalStatus GetStatus();
     }
 }

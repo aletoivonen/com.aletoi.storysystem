@@ -16,11 +16,14 @@ namespace StorySystem
         public static event Action<StoryPhase> OnPhaseChanged;
         public static event Action OnGameLoaded;
 
+        public StoryConfiguration Configuration => _configuration;
+
         [SerializeField] private StoryConfiguration _configuration;
 
         private ISaveGameContainer _saveGameContainer;
 
-        [ReadOnly] [SerializeField] private StoryPhase _currentPhase;
+        private StoryState _storyState;
+        private bool _checkingProgression;
 
         [SerializeField] private List<StoryFlagItem> _debugFlagToggle;
 
@@ -38,12 +41,15 @@ namespace StorySystem
             Initialize();
 
             StoryGoal.OnGoalCompleted += GoalCompleted;
+            StoryGoal.OnGoalFailed += GoalFailed;
         }
 
         private void Initialize()
         {
             Type containerType = _configuration.SaveGameType;
             _saveGameContainer = (ISaveGameContainer)ScriptableObject.CreateInstance(containerType.Name);
+
+            _storyState = new StoryState(_configuration);
 
             if (_configuration.SlotCount == 1)
             {
@@ -63,74 +69,94 @@ namespace StorySystem
 
         public void ActivateExit(string id)
         {
-            StoryExit exit = _currentPhase.GetExit(id);
+            Debug.Log("Activate exit: " + id);
+            StoryExit exit = _storyState.CurrentPhase.GetExit(id);
 
-            if (exit != null && exit.GetStatus() == ExitStatus.Complete)
+            if (exit.NextPhase == null)
             {
-                if (exit.NextPhase == null)
-                {
-                    Debug.Log("Game complete " + exit.ExitId);
-                }
-                else
-                {
-                    ChangePhase(exit.NextPhase.PhaseId);
-                }
-
-                _saveGameContainer.SaveGame();
+                Debug.Log("Game complete " + exit.ExitId);
             }
+            else
+            {
+                Debug.Log("Change phase on activate exit");
+                ChangePhase(exit.NextPhase.PhaseId);
+            }
+
+            SaveSlot();
         }
 
         private void ChangePhase(string id)
         {
             Debug.Log("Change phase to " + id);
             StoryPhase phase = _configuration.GetPhase(id);
-            _currentPhase = phase;
+            _storyState.SetCurrentPhase(phase);
             OnPhaseChanged?.Invoke(phase);
         }
 
-        private void LoadSlot(int slot)
+        [ContextMenu("Load game")]
+        public void LoadSlot() => LoadSlot(-1);
+
+
+        public void LoadSlot(int slot)
         {
             _saveGameContainer.LoadGame(slot);
 
-            string currentPhase = _saveGameContainer.GetCurrentPhaseId();
-
-            if (string.IsNullOrEmpty(currentPhase))
-            {
-                _currentPhase = _configuration.DefaultPhase();
-                _saveGameContainer.SetCurrentPhaseId(_currentPhase.PhaseId);
-            }
-            else
-            {
-                _configuration.GetPhase(currentPhase);
-            }
+            _storyState.LoadFromSave(ref _saveGameContainer);
 
             OnGameLoaded?.Invoke();
         }
 
+        [ContextMenu("Save game")]
+        public void SaveSlot() => SaveSlot(-1);
+
+        public void SaveSlot(int slot = -1)
+        {
+            _storyState.WriteToSave(ref _saveGameContainer);
+            _saveGameContainer.SaveGame(slot);
+        }
+
         public void CheckProgression()
         {
-            foreach (StoryExit exit in _currentPhase.Exits)
+            if (_checkingProgression) { return; }
+
+            _checkingProgression = true;
+
+            foreach (StoryExit exit in _storyState.CurrentPhase.Exits)
             {
                 if (exit.GetStatus() == ExitStatus.Complete && exit.AutoActivate)
                 {
-                    ActivateExit(exit.NextPhase.PhaseId);
+                    ActivateExit(exit.ExitId);
+                    break;
                 }
             }
+
+            _checkingProgression = false;
         }
 
-        public bool GetFlag(string flag) { return _saveGameContainer.GetFlag(flag); }
+        public bool GetFlag(string flag)
+        {
+            return _storyState.GetFlag(flag);
+        }
 
         public void SetFlag(string flag, bool value)
         {
             Debug.Log("Set flag " + flag + " to " + value);
-            _saveGameContainer.SetFlag(flag, value);
+            _storyState.SetFlag(flag, value);
 
             OnFlagChanged?.Invoke(flag, value);
 
             CheckProgression();
         }
 
-        public GoalStatus GetGoalFinished(string id) { return _saveGameContainer.GetGoalFinishStatus(id); }
+        public GoalStatus GetGoalFinishStatus(string id)
+        {
+            return _storyState.GetGoalFinishStatus(id);
+        }
+
+        public void SetGoalFinished(string goalId, GoalStatus status)
+        {
+            _storyState.SetGoalFinishStatus(goalId, status);
+        }
 
         public void GoalCompleted(StoryGoal goal)
         {
@@ -138,6 +164,13 @@ namespace StorySystem
             {
                 SetFlag(flag.Flag, true);
             }
+
+            SetGoalFinished(goal.GoalId, GoalStatus.Complete);
+        }
+
+        public void GoalFailed(StoryGoal goal)
+        {
+            SetGoalFinished(goal.GoalId, GoalStatus.Failed);
         }
     }
 }
