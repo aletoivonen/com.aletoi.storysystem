@@ -15,12 +15,18 @@ namespace StorySystem
         {
             EditorGUI.BeginChangeCheck();
             var flags = StoryFlagUtil.Flags;
+
+            if (flags == null)
+            {
+                EditorGUI.HelpBox(position, "Flags not found, story not set up?", MessageType.Error);
+                return;
+            }
+            
             var oldIndex = flags.IndexOf(property.stringValue);
 
             if (oldIndex < 0 && property.stringValue != "")
             {
                 EditorGUI.HelpBox(position, "Invalid flag: " + property.stringValue, MessageType.Error);
-                return;
             }
             
             int index = EditorGUI.Popup(position, oldIndex >= 0 ? oldIndex : -1,

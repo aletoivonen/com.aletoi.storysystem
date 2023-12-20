@@ -8,6 +8,11 @@ namespace StorySystem
     [InitializeOnLoad]
     public static class StoryFlagUtil
     {
+        static StoryFlagUtil()
+        {
+            
+        }
+        
         private static List<string> _flags = null;
 
         public static List<string> Flags
@@ -19,7 +24,6 @@ namespace StorySystem
                     var config = Resources.FindObjectsOfTypeAll<FlagDefinitions>();
                     if (config == null || config.Length < 1)
                     {
-                        Debug.LogError("No FlagDefinitions found, please create the asset!");
                         return null;
                     }
 

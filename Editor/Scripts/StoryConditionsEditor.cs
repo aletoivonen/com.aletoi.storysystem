@@ -17,6 +17,12 @@ namespace StorySystem
         {
             StoryCondition condition = (StoryCondition)target;
 
+            if (choices == null)
+            {
+                EditorGUILayout.HelpBox("Flags not found, story not set up?", MessageType.Error);
+                return;
+            }
+
             DrawDefaultInspector();
 
             foreach (StoryFlagItem flag in condition.RequiredFlags)
