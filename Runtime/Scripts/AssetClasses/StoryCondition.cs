@@ -13,10 +13,12 @@ namespace StorySystem
 
         public bool IsFulfilled()
         {
-            return RequiredFlags.All(flag => StorySingleton.Instance.GetFlag(flag.Flag)) &&
-                   BlockingFlags.All(flag => !StorySingleton.Instance.GetFlag(flag.Flag));
+            return RequiredFlags.All(flag => StorySingleton.Instance.GetFlag(flag.Flag))
+                   && BlockingFlags.All(flag => !StorySingleton.Instance.GetFlag(flag.Flag));
         }
     }
+
+    public class StoryFlagAttribute : PropertyAttribute { }
 
     [System.Serializable]
     public class StoryFlagItem

@@ -21,25 +21,19 @@ namespace StorySystem
                 EditorGUI.HelpBox(position, "Flags not found, story not set up?", MessageType.Error);
                 return;
             }
-            
+
             var oldIndex = flags.IndexOf(property.stringValue);
 
             if (oldIndex < 0 && property.stringValue != "")
             {
                 EditorGUI.HelpBox(position, "Invalid flag: " + property.stringValue, MessageType.Error);
             }
-            
-            int index = EditorGUI.Popup(position, oldIndex >= 0 ? oldIndex : -1,
-                StoryFlagUtil.Flags.ToArray());
+
+            int index = EditorGUI.Popup(position, oldIndex >= 0 ? oldIndex : -1, StoryFlagUtil.Flags.ToArray());
             if (EditorGUI.EndChangeCheck())
             {
                 property.stringValue = StoryFlagUtil.Flags[index];
             }
         }
-    }
-
-// Create a custom attribute for read-only fields
-    public class StoryFlagAttribute : PropertyAttribute
-    {
     }
 }
