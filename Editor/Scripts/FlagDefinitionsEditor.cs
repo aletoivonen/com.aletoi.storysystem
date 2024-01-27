@@ -17,21 +17,8 @@ public class FlagDefinitionsEditor : Editor
         _defs = (FlagDefinitions)target;
 
         DrawDefaultInspector();
-
-        /*
-         This is obsolete atm because the enum generated in the project isn't visible to package code.
-         This could be used if the package was extracted in the project and could see the enum.
-
-         string path = GUILayout.TextField(string.IsNullOrEmpty(_defs.EnumPath) ? _defaultPath : _defs.EnumPath);
-        if (path != _defaultPath)
-        {
-            _defs.EnumPath = path;
-        }
-
-        if (GUILayout.Button("Generate enum"))
-        {
-            Generate(path);
-        }*/
+        
+        StoryFlagUtil.ClearCache();
     }
 
     private void Generate(string path)

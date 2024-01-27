@@ -15,6 +15,11 @@ namespace StorySystem
         
         private static List<string> _flags = null;
 
+        public static void ClearCache()
+        {
+            _flags = null;
+        }
+
         public static List<string> Flags
         {
             get
