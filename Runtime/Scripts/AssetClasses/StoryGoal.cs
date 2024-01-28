@@ -13,9 +13,9 @@ namespace StorySystem
 
         [SerializeField] private string _goalId;
 
-        [SerializeField] private List<StoryCondition> _prerequisites;
-        [SerializeField] private List<StoryCondition> _completeConditions;
-        [SerializeField] private List<StoryCondition> _failConditions;
+        [SerializeField] private List<StoryCondition> _prerequisites = new List<StoryCondition>();
+        [SerializeField] private List<StoryCondition> _completeConditions = new List<StoryCondition>();
+        [SerializeField] private List<StoryCondition> _failConditions = new List<StoryCondition>();
 
         public List<StoryCondition> Prerequisites => _prerequisites;
         public List<StoryCondition> CompleteConditions => _completeConditions;
@@ -36,13 +36,13 @@ namespace StorySystem
                 return finishStatus;
             }
 
-            if (!_prerequisites.All(condition => condition.IsFulfilled()))
+            if (!_prerequisites.All(condition => condition != null && condition.IsFulfilled()))
             {
                 Debug.Log("goal locked: " + _goalId);
                 return GoalStatus.Locked;
             }
 
-            if (_failConditions.Any(condition => condition.IsFulfilled()))
+            if (_failConditions.Any(condition => condition != null && condition.IsFulfilled()))
             {
                 Debug.Log("goal failed: " + _goalId);
 
@@ -54,7 +54,7 @@ namespace StorySystem
                 return GoalStatus.Failed;
             }
 
-            if (_completeConditions.All(condition => condition.IsFulfilled()))
+            if (_completeConditions.All(condition => condition != null && condition.IsFulfilled()))
             {
                 Debug.Log("goal completed: " + _goalId);
                 if (!skipInvoke)
