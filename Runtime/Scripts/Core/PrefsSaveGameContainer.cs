@@ -9,12 +9,14 @@ namespace StorySystem
         [SerializeField] private string KeyPhase = "currentphase";
         [SerializeField] private string KeyFlagPrefix = "flag_";
         [SerializeField] private string KeyGoalPrefix = "goalfinished_";
+        [SerializeField] private string KeyExitPrefix = "exitstatus_";
 
         private int _saveIndex = -1;
 
         private string GetPhaseKey => KeyPhase + "_save" + _saveIndex;
         private string GetFlagKey(string id) => KeyFlagPrefix + id + "_save" + _saveIndex;
         private string GetGoalKey(string id) => KeyGoalPrefix + id + "_save" + _saveIndex;
+        private string GetExitKey(string id) => KeyExitPrefix + id + "_save" + _saveIndex;
 
         public void LoadGame(int saveIndex)
         {
@@ -60,6 +62,18 @@ namespace StorySystem
         public void SetGoalFinishStatus(string id, GoalStatus status)
         {
             PlayerPrefs.SetInt(GetGoalKey(id), (int)status);
+        }
+        
+        public void SetExitStatus(string id, ExitStatus status)
+        {
+            PlayerPrefs.SetInt(GetExitKey(id), (int)status);
+        }
+
+        public ExitStatus GetExitStatus(string id)
+        {
+            int exit = PlayerPrefs.GetInt(GetExitKey(id), 0);
+            Debug.Log("exit " + id + " pref int: " + exit);
+            return (ExitStatus)exit;
         }
     }
 }

@@ -15,6 +15,11 @@ namespace StorySystem
         public static event Action<string, bool> OnFlagChanged;
         public static event Action<StoryPhase> OnPhaseChanged;
         public static event Action OnGameLoaded;
+        public static event Action<StoryGoal> OnGoalCompleted;
+        public static event Action<StoryGoal> OnGoalFailed;
+        public static event Action<StoryExit> OnExitOpened;
+        public static event Action<StoryExit> OnExitFailed;
+        public static event Action<StoryExit> OnExitActivated;
 
         public StoryConfiguration Configuration => _configuration;
 
@@ -40,8 +45,20 @@ namespace StorySystem
 
             Initialize();
 
-            StoryGoal.OnGoalCompleted += GoalCompleted;
-            StoryGoal.OnGoalFailed += GoalFailed;
+            StoryGoal.InternalGoalCompleted += InternalGoalCompleted;
+            StoryGoal.InternalGoalFailed += InternalGoalFailed;
+
+            StoryExit.InternalExitOpened += InternalExitOpened;
+            StoryExit.InternalExitFailed += InternalExitFailed;
+        }
+
+        private void OnDestroy()
+        {
+            StoryGoal.InternalGoalCompleted -= InternalGoalCompleted;
+            StoryGoal.InternalGoalFailed -= InternalGoalFailed;
+
+            StoryExit.InternalExitOpened -= InternalExitOpened;
+            StoryExit.InternalExitFailed -= InternalExitFailed;
         }
 
         private void Initialize()
@@ -83,6 +100,8 @@ namespace StorySystem
             }
 
             SaveSlot();
+
+            OnExitActivated?.Invoke(exit);
         }
 
         private void ChangePhase(string id)
@@ -95,7 +114,6 @@ namespace StorySystem
 
         [ContextMenu("Load game")]
         public void LoadSlot() => LoadSlot(-1);
-
 
         public void LoadSlot(int slot)
         {
@@ -123,7 +141,7 @@ namespace StorySystem
 
             foreach (StoryExit exit in _storyState.CurrentPhase.Exits)
             {
-                if (exit.GetStatus() == ExitStatus.Complete && exit.AutoActivate)
+                if (exit.GetStatus() == ExitStatus.Opened && exit.AutoActivate)
                 {
                     ActivateExit(exit.ExitId);
                     break;
@@ -168,7 +186,17 @@ namespace StorySystem
             _storyState.SetGoalFinishStatus(goalId, status);
         }
 
-        public void GoalCompleted(StoryGoal goal)
+        public ExitStatus GetExitStatus(string id)
+        {
+            return _storyState.GetExitStatus(id);
+        }
+
+        public void SetExitStatus(string exitId, ExitStatus status)
+        {
+            _storyState.SetExitStatus(exitId, status);
+        }
+
+        public void InternalGoalCompleted(StoryGoal goal)
         {
             foreach (StoryFlagItem flag in goal.RewardFlags)
             {
@@ -176,11 +204,29 @@ namespace StorySystem
             }
 
             SetGoalFinished(goal.GoalId, GoalStatus.Complete);
+
+            OnGoalCompleted?.Invoke(goal);
         }
 
-        public void GoalFailed(StoryGoal goal)
+        public void InternalGoalFailed(StoryGoal goal)
         {
             SetGoalFinished(goal.GoalId, GoalStatus.Failed);
+
+            OnGoalFailed?.Invoke(goal);
+        }
+
+        public void InternalExitOpened(StoryExit exit)
+        {
+            SetExitStatus(exit.ExitId, ExitStatus.Opened);
+
+            OnExitOpened?.Invoke(exit);
+        }
+
+        public void InternalExitFailed(StoryExit exit)
+        {
+            SetExitStatus(exit.ExitId, ExitStatus.Failed);
+
+            OnExitFailed?.Invoke(exit);
         }
     }
 }

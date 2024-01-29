@@ -8,8 +8,8 @@ namespace StorySystem
     [CreateAssetMenu(fileName = "StoryGoal", menuName = "StorySystem/StoryGoal", order = 2)]
     public class StoryGoal : ScriptableObject, IStoryGoal
     {
-        public static event Action<StoryGoal> OnGoalCompleted;
-        public static event Action<StoryGoal> OnGoalFailed;
+        public static event Action<StoryGoal> InternalGoalCompleted;
+        public static event Action<StoryGoal> InternalGoalFailed;
 
         [SerializeField] private string _goalId;
 
@@ -48,7 +48,7 @@ namespace StorySystem
 
                 if (!skipInvoke)
                 {
-                    OnGoalFailed?.Invoke(this);
+                    InternalGoalFailed?.Invoke(this);
                 }
 
                 return GoalStatus.Failed;
@@ -59,7 +59,7 @@ namespace StorySystem
                 Debug.Log("goal completed: " + _goalId);
                 if (!skipInvoke)
                 {
-                    OnGoalCompleted?.Invoke(this);
+                    InternalGoalCompleted?.Invoke(this);
                 }
 
                 return GoalStatus.Complete;

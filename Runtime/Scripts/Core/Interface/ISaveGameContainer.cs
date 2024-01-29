@@ -15,5 +15,9 @@ namespace StorySystem
         public void SetGoalFinishStatus(string id, GoalStatus status);
 
         public GoalStatus GetGoalFinishStatus(string id);
+
+        public void SetExitStatus(string id, ExitStatus status);
+
+        public ExitStatus GetExitStatus(string id);
     }
 }

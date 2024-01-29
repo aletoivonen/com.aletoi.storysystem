@@ -4,7 +4,7 @@
     {
         InProgress = 0,
         Locked,
-        Complete,
+        Opened,
         Failed
     }
 }

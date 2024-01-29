@@ -9,13 +9,13 @@ namespace StorySystem
     {
         public FlagDefinitions FlagDefinitions;
         [Range(1, 10)] public int SlotCount = 1;
-        
+
         [SerializeField] private ScriptableObject SaveGameContainer;
 
         [SerializeField] private List<StoryPhase> _phases;
 
         public List<StoryPhase> Phases => _phases;
-        
+
         public System.Type SaveGameType => SaveGameContainer.GetType();
 
         public StoryPhase GetPhase(string id)
@@ -31,20 +31,31 @@ namespace StorySystem
         public List<StoryGoal> GetAllGoals()
         {
             List<StoryGoal> allGoals = new List<StoryGoal>();
-            
-            foreach (StoryPhase phase in _phases)
+
+            foreach (StoryExit exit in GetAllExits())
             {
-                foreach (StoryExit exit in phase.Exits)
+                foreach (StoryGoal goal in exit.Goals)
                 {
-                    foreach (StoryGoal goal in exit.Goals)
-                    {
-                        allGoals.Add(goal);
-                    }
+                    allGoals.Add(goal);
                 }
             }
 
             return allGoals;
-        } 
-    }
+        }
 
+        public List<StoryExit> GetAllExits()
+        {
+            List<StoryExit> allExits = new List<StoryExit>();
+
+            foreach (StoryPhase phase in _phases)
+            {
+                foreach (StoryExit exit in phase.Exits)
+                {
+                    allExits.Add(exit);
+                }
+            }
+
+            return allExits;
+        }
+    }
 }

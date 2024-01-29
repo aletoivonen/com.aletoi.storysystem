@@ -71,7 +71,7 @@ namespace StorySystem
 
                     ExitStatus exitStatus = exit.GetStatus(true);
 
-                    if (exitStatus == ExitStatus.Complete)
+                    if (exitStatus == ExitStatus.Opened)
                     {
                         exitTemplate = "<color=green>{0}</color>";
                     }

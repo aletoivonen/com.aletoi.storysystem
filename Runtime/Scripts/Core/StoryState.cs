@@ -8,6 +8,7 @@ namespace StorySystem
     {
         public Dictionary<string, bool> Flags { get; private set; } = new Dictionary<string, bool>();
         public Dictionary<string, GoalStatus> GoalStatuses { get; private set; } = new Dictionary<string, GoalStatus>();
+        public Dictionary<string, ExitStatus> ExitStatuses { get; private set; } = new Dictionary<string, ExitStatus>();
 
         public StoryPhase CurrentPhase { get; private set; }
 
@@ -46,6 +47,11 @@ namespace StorySystem
             {
                 GoalStatuses[goal.GoalId] = saveGameContainer.GetGoalFinishStatus(goal.GoalId);
             }
+
+            foreach (StoryExit exit in _configuration.GetAllExits())
+            {
+                ExitStatuses[exit.ExitId] = saveGameContainer.GetExitStatus(exit.ExitId);
+            }
         }
 
         public void WriteToSave(ref ISaveGameContainer saveGameContainer)
@@ -62,6 +68,11 @@ namespace StorySystem
             foreach (StoryGoal goal in _configuration.GetAllGoals())
             {
                 saveGameContainer.SetGoalFinishStatus(goal.GoalId, GoalStatuses[goal.GoalId]);
+            }
+
+            foreach (StoryExit exit in _configuration.GetAllExits())
+            {
+                saveGameContainer.SetExitStatus(exit.ExitId, ExitStatuses[exit.ExitId]);
             }
         }
 
@@ -88,6 +99,16 @@ namespace StorySystem
         public void SetGoalFinishStatus(string id, GoalStatus status)
         {
             GoalStatuses[id] = status;
+        }
+
+        public void SetExitStatus(string exitId, ExitStatus status)
+        {
+            ExitStatuses[exitId] = status;
+        }
+
+        public ExitStatus GetExitStatus(string id)
+        {
+            return ExitStatuses[id];
         }
     }
 }
