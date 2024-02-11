@@ -23,6 +23,8 @@ namespace StorySystem
     [System.Serializable]
     public class StoryFlagItem
     {
+        public static implicit operator string(StoryFlagItem i) => i.Flag;
+        
         [StoryFlag]
         public string Flag;
     }
