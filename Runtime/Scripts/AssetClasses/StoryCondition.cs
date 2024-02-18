@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -21,12 +22,32 @@ namespace StorySystem
     public class StoryFlagAttribute : PropertyAttribute { }
 
     [System.Serializable]
-    public class StoryFlagItem
+    public class StoryFlagItem : IEquatable<StoryFlagItem>
     {
         public static implicit operator string(StoryFlagItem i) => i.Flag;
         
         [StoryFlag]
         public string Flag;
+
+        public bool Equals(StoryFlagItem other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Flag == other.Flag;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((StoryFlagItem)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Flag != null ? Flag.GetHashCode() : 0);
+        }
     }
 
     public interface IStoryCondition
