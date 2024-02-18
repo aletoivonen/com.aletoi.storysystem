@@ -25,6 +25,8 @@ namespace StorySystem
 
         [SerializeField] private StoryConfiguration _configuration;
 
+        [SerializeField] private bool _debugLog;
+
         private ISaveGameContainer _saveGameContainer;
 
         private StoryState _storyState;
@@ -86,16 +88,16 @@ namespace StorySystem
 
         public void ActivateExit(string id)
         {
-            Debug.Log("Activate exit: " + id);
+            Log("Activate exit: " + id, LogType.Log);
             StoryExit exit = _storyState.CurrentPhase.GetExit(id);
 
             if (exit.NextPhase == null)
             {
-                Debug.Log("Game complete " + exit.ExitId);
+                Log("Game complete " + exit.ExitId, LogType.Log);
             }
             else
             {
-                Debug.Log("Change phase on activate exit");
+                Log("Change phase on activate exit", LogType.Log);
                 ChangePhase(exit.NextPhase.PhaseId);
             }
 
@@ -106,7 +108,7 @@ namespace StorySystem
 
         private void ChangePhase(string id)
         {
-            Debug.Log("Change phase to " + id);
+            Log("Change phase to " + id, LogType.Log);
             StoryPhase phase = _configuration.GetPhase(id);
             _storyState.SetCurrentPhase(phase);
             OnPhaseChanged?.Invoke(phase);
@@ -168,12 +170,16 @@ namespace StorySystem
 
         public void SetFlag(string flag, bool value)
         {
-            Debug.Log("Set flag " + flag + " to " + value);
-            _storyState.SetFlag(flag, value);
+            bool previousValue = GetFlag(flag);
 
-            OnFlagChanged?.Invoke(flag, value);
+            Log("Set flag " + flag + " to " + value, LogType.Log);
 
-            CheckProgression();
+            if (previousValue != value)
+            {
+                _storyState.SetFlag(flag, value);
+                OnFlagChanged?.Invoke(flag, value);
+                CheckProgression();
+            }
         }
 
         public GoalStatus GetGoalFinishStatus(string id)
@@ -227,6 +233,14 @@ namespace StorySystem
             SetExitStatus(exit.ExitId, ExitStatus.Failed);
 
             OnExitFailed?.Invoke(exit);
+        }
+
+        private void Log(string content, LogType type)
+        {
+            if (_debugLog)
+            {
+                Debug.LogFormat(type, LogOption.None, this, content);
+            }
         }
     }
 }
