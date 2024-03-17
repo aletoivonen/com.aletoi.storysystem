@@ -1,6 +1,6 @@
 {
   "name": "com.aletoi.storysystem",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "displayName": "StorySystem",
   "description": "This is a simple expandable story system for single player games",
   "unity": "2020.3",

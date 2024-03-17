@@ -19,13 +19,15 @@ namespace StorySystem
         }
     }
 
-    public class StoryFlagAttribute : PropertyAttribute { }
+    public class StoryFlagAttribute : PropertyAttribute
+    {
+    }
 
     [System.Serializable]
     public class StoryFlagItem : IEquatable<StoryFlagItem>
     {
         public static implicit operator string(StoryFlagItem i) => i.Flag;
-        
+
         [StoryFlag]
         public string Flag;
 
@@ -47,6 +49,21 @@ namespace StorySystem
         public override int GetHashCode()
         {
             return (Flag != null ? Flag.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(StoryFlagItem left, StoryFlagItem right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(StoryFlagItem left, StoryFlagItem right)
+        {
+            return !Equals(left, right);
+        }
+
+        public bool IsTrue()
+        {
+            return StorySingleton.Instance.GetFlag(Flag);
         }
     }
 
